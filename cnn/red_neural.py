@@ -1,6 +1,7 @@
 """ modelo de red neural convolcional
 
 Modelo de red neuronal basico uno.
+modelo convulucional.
 
 """
 from tensorflow.keras.layers import (Input, Dense, Activation, ZeroPadding2D,
@@ -14,7 +15,7 @@ from tensorflow.keras.models import Model
 def model_build(in_shp, cfg):
     """ Construccion del modelo
 
-    Función para construirelur el modelo
+
     """
     # convolucional
     x_in = Input(in_shp)
