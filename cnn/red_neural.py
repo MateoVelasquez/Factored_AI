@@ -1,5 +1,7 @@
 """ modelo de red neural convolcional
 
+Modelo de red neuronal basico uno.
+
 """
 from tensorflow.keras.layers import (Input, Dense, Activation, ZeroPadding2D,
                           BatchNormalization, Flatten, Conv2D) #noqa
