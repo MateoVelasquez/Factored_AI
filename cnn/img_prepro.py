@@ -7,6 +7,7 @@ import math
 import pathlib
 import numpy as np
 from tensorflow import keras
+from tensorflow import data, strings
 import matplotlib.pyplot as plt
 
 
@@ -58,7 +59,19 @@ def show_batch(image_batch, label_batch, class_names):
     return
 
 
+def get_label(file_path, CLASS_NAMES):
+    # convert the path to a list of path components
+    parts = strings.split(file_path, os.path.sep)
+    # The second to last is the class-directory
+    return parts[-2] == CLASS_NAMES
+
+
 if __name__ == "__main__":
+    # # Previsualizacion
     generador, class_names = build_generador(DATA_DIR)
     image_batch, label_batch = next(generador)
-    show_batch(image_batch, label_batch, class_names)
+    # show_batch(image_batch, label_batch, class_names)
+    # # Cargando datos con keras
+    list_ds = data.Dataset.list_files(str(pathlib.Path(DATA_DIR)/'*/*'))
+    for f in list_ds.take(5):
+        print(f.numpy())
