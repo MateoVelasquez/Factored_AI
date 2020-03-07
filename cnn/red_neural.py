@@ -10,15 +10,17 @@ from tensorflow.keras.layers import (AveragePooling2D, MaxPooling2D, Dropout, #n
                           GlobalMaxPooling2D, GlobalAveragePooling2D) #noqa
 from tensorflow.keras.utils import plot_model
 from tensorflow.keras.models import Model
-import cnn.img_prepro
+from cnn.gen_generator import build_generador
 
 
 # parametros de entrenamiento
 TRAIN_DATA_PATH = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\train'
 TEST_DATA_PATH = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\test'
 VAL_DATA_PATH = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val'
-
+BATCH_SIZE = 32
 EPOCAS = 100
+IMG_SZE = (480, 640)  # (heigth, width)
+
 
 
 def model_build(in_shp, cfg):
@@ -50,15 +52,14 @@ def model_build(in_shp, cfg):
     return model_cp, model_nc
 
 
-def train_model(modelo, train_generador, test_generador):
+def train_model(modelo, train_generador, test_generador, nb_test_samples):
+    pasos_fit = (nb_test_samples // BATCH_SIZE)
+    model_history = modelo.fit_generator(train_generator,
+                                         epochs=EPOCAS,
+                                         validation_data=test_generador,
+                                         validation_steps=pasos_fit)
+    return model_history
 
-    model_history = model.fit_generator(train_generator,
-                                        epochs=EPOCAS,
-                                        validation_data=validation_generator,
-                                        validation_steps=nb_validation_samples // batch_size,
-                                        callbacks=callbacks_list)
-    pass
-    
 
 if __name__ == "__main__":
     parametros = {
@@ -76,6 +77,4 @@ if __name__ == "__main__":
     }
     resolucion = (20, 20, 3)
     red = model_build(resolucion, parametros)
-
-
     pass
