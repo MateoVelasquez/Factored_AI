@@ -10,6 +10,15 @@ from tensorflow.keras.layers import (AveragePooling2D, MaxPooling2D, Dropout, #n
                           GlobalMaxPooling2D, GlobalAveragePooling2D) #noqa
 from tensorflow.keras.utils import plot_model
 from tensorflow.keras.models import Model
+import cnn.img_prepro
+
+
+# parametros de entrenamiento
+TRAIN_DATA_PATH = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\train'
+TEST_DATA_PATH = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\test'
+VAL_DATA_PATH = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val'
+
+EPOCAS = 100
 
 
 def model_build(in_shp, cfg):
@@ -41,6 +50,16 @@ def model_build(in_shp, cfg):
     return model_cp, model_nc
 
 
+def train_model(modelo, train_generador, test_generador):
+
+    model_history = model.fit_generator(train_generator,
+                                        epochs=EPOCAS,
+                                        validation_data=validation_generator,
+                                        validation_steps=nb_validation_samples // batch_size,
+                                        callbacks=callbacks_list)
+    pass
+    
+
 if __name__ == "__main__":
     parametros = {
         'padding': (4, 4),
@@ -56,6 +75,7 @@ if __name__ == "__main__":
         'metrica': ['accuracy']
     }
     resolucion = (20, 20, 3)
-    model_build(resolucion, parametros)
+    red = model_build(resolucion, parametros)
+
 
     pass

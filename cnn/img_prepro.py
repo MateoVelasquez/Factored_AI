@@ -20,7 +20,7 @@ DATA_DIR = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\test'
 # STEPS_PER_EPOCH = np.ceil(image_count/BATCH_SIZE)
 
 
-def build_generador(data_dir):
+def build_generador(data_dir, batch_sze=BATCH_SIZE, trgt_sze=(IMG_H, IMG_W)):
     """funcion para crear generador
 
     Funcion para crear el generador de entrenamiento a partir de
@@ -37,9 +37,9 @@ def build_generador(data_dir):
     # creando el generador
     img_gen = keras.preprocessing.image.ImageDataGenerator(rescale=1./255)
     train_data_gen = img_gen.flow_from_directory(directory=str(data_dir),
-                                                 batch_size=BATCH_SIZE,
+                                                 batch_size=batch_sze,
                                                  shuffle=True,
-                                                 target_size=(IMG_H, IMG_W),
+                                                 target_size=trgt_sze,
                                                  classes=list(CLASS_NAMES))
     return train_data_gen, CLASS_NAMES
 
@@ -70,8 +70,8 @@ if __name__ == "__main__":
     # # Previsualizacion
     generador, class_names = build_generador(DATA_DIR)
     image_batch, label_batch = next(generador)
-    # show_batch(image_batch, label_batch, class_names)
-    # # Cargando datos con keras
-    list_ds = data.Dataset.list_files(str(pathlib.Path(DATA_DIR)/'*/*'))
-    for f in list_ds.take(5):
-        print(f.numpy())
+    show_batch(image_batch, label_batch, class_names)
+    # # # Cargando datos con keras
+    # list_ds = data.Dataset.list_files(str(pathlib.Path(DATA_DIR)/'*/*'))
+    # for f in list_ds.take(5):
+    #     print(f.numpy())
