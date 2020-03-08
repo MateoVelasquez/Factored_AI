@@ -7,7 +7,6 @@ import math
 import pathlib
 import numpy as np
 from tensorflow import keras
-from tensorflow import data, strings
 import matplotlib.pyplot as plt
 
 
@@ -15,12 +14,13 @@ import matplotlib.pyplot as plt
 BATCH_SIZE = 32
 IMG_H = 480
 IMG_W = 640
-DATA_DIR = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\test'
+DATA_DIR = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\train'
 
 # STEPS_PER_EPOCH = np.ceil(image_count/BATCH_SIZE)
 
 
-def build_generador(data_dir, batch_sze=BATCH_SIZE, trgt_sze=(IMG_H, IMG_W)):
+def build_generador(data_dir, batch_sze=BATCH_SIZE,
+                    trgt_sze=(IMG_H, IMG_W), color='rgb'):
     """funcion para crear generador
 
     Funcion para crear el generador de entrenamiento a partir de
@@ -40,7 +40,9 @@ def build_generador(data_dir, batch_sze=BATCH_SIZE, trgt_sze=(IMG_H, IMG_W)):
                                                  batch_size=batch_sze,
                                                  shuffle=True,
                                                  target_size=trgt_sze,
-                                                 classes=list(CLASS_NAMES))
+                                                 color_mode=color,
+                                                 classes=list(CLASS_NAMES),
+                                                 class_mode='categorical')
     return train_data_gen, CLASS_NAMES
 
 
@@ -57,13 +59,6 @@ def show_batch(image_batch, label_batch, class_names):
     plt.draw()
     plt.show()
     return
-
-
-def get_label(file_path, CLASS_NAMES):
-    # convert the path to a list of path components
-    parts = strings.split(file_path, os.path.sep)
-    # The second to last is the class-directory
-    return parts[-2] == CLASS_NAMES
 
 
 if __name__ == "__main__":
