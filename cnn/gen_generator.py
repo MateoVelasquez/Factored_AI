@@ -42,7 +42,7 @@ def build_generador(data_dir, batch_sze=BATCH_SIZE,
                                                  target_size=trgt_sze,
                                                  color_mode=color,
                                                  classes=list(CLASS_NAMES),
-                                                 class_mode='categorical')
+                                                 class_mode='binary')
     return train_data_gen, CLASS_NAMES
 
 
