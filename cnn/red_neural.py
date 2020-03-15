@@ -104,11 +104,11 @@ def train_model(modelo, cfg_train, red_name=DEFAULT_NAME, save_weights=True):
     callbacks_list = [early_stop, reduce_lr]
     nb_test_samples = len(test_generador)
     pasos_fit = (nb_test_samples // cfg_train['BATCH_SIZE'])
-    model_history = modelo.fit_generator(train_generador,
-                                         epochs=cfg_train['EPOCAS'],
-                                         validation_data=test_generador,
-                                         validation_steps=pasos_fit,
-                                         callbacks=callbacks_list)
+    model_history = modelo.fit(train_generador,
+                               epochs=cfg_train['EPOCAS'],
+                               validation_data=test_generador,
+                               validation_steps=pasos_fit,
+                               callbacks=callbacks_list)
     if save_weights:
         savepath = os.path.join(dicact, 'saved_models')
         os.makedirs(savepath, exist_ok=True)
