@@ -9,9 +9,9 @@ cfg_train = {
     'TRAIN_DATA_PATH': r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\train',
     'TEST_DATA_PATH': r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\test',
     'VAL_DATA_PATH': r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val',
-    'BATCH_SIZE': 5,
-    'EPOCAS': 100,
-    'IMG_SZE': (720, 1280, 1),  # (heigth, width, channel)
+    'BATCH_SIZE': 32,
+    'EPOCAS': 50,
+    'IMG_SZE': (224, 224, 1),  # (heigth, width, channel)
     'IMG_COLOR': "grayscale"
 }
 
@@ -21,7 +21,7 @@ def test_red():
     parametros = {
         'padding': (4, 4),
         'kernel_num': 32,
-        'kernel_sze': (7, 7),
+        'kernel_sze': (3, 3),
         'stride': (1, 1),
         'norm_ejes': 3,
         'l1_act': 'relu',

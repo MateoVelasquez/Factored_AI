@@ -20,7 +20,8 @@ from tensorflow.keras.callbacks import (EarlyStopping, ReduceLROnPlateau)
 
 
 dicact = os.path.split(os.path.dirname(cnn.__file__))[0]
-DEFAULT_NAME = 'red_cnn'
+savepath = os.path.join(dicact, 'saved_models')
+DEFAULT_NAME = 'alexnet'
 
 
 def model_build(img_resolucion, cfg, red_name=DEFAULT_NAME, save_model=True):
@@ -28,18 +29,40 @@ def model_build(img_resolucion, cfg, red_name=DEFAULT_NAME, save_model=True):
 
 
     """
-    # convolucional
+    # input
     x_in = Input(img_resolucion)
     x = ZeroPadding2D(cfg['padding'])(x_in)
+
+    # convolucional 0
     x = Conv2D(cfg['kernel_num'], cfg['kernel_sze'], strides=cfg['stride'],
                name='convolucion_0')(x)
     x = BatchNormalization(axis=cfg['norm_ejes'], name='batch_normal_0')(x)
     x = Activation(cfg['l1_act'])(x)
-    x = MaxPooling2D(cfg['maxpool_sze'], name='max_pooling')(x)
+    x = MaxPooling2D(cfg['maxpool_sze'], name='max_pooling_0')(x)
 
-    # Fullyconected
+    # convolucional 1
+    x = Conv2D(cfg['kernel_num'], cfg['kernel_sze'], strides=cfg['stride'],
+               name='convolucion_1')(x)
+    x = BatchNormalization(axis=cfg['norm_ejes'], name='batch_normal_1')(x)
+    x = Activation(cfg['l1_act'])(x)
+    x = MaxPooling2D(cfg['maxpool_sze'], name='max_pooling_1')(x)
+
+    # convolucion 2
+    x = Conv2D(64, cfg['kernel_sze'], strides=cfg['stride'],
+               name='convolucion_2')(x)
+    x = BatchNormalization(axis=cfg['norm_ejes'], name='batch_normal_2')(x)
+    x = Activation(cfg['l1_act'])(x)
+    x = MaxPooling2D(cfg['maxpool_sze'], name='max_pooling_2')(x)
+
+    # Flatten
     x = Flatten()(x)
-    x = Dense(1, activation=cfg['fc_act'], name='fully_conected')(x)
+    # Fullyconected 0
+    x = Dense(64, activation=cfg['fc_act'], name='fully_conected_0')(x)
+    x = Dropout(0.5)(x)
+
+    # Fullyconected 1
+    x = Dense(1, activation=cfg['fc_act'], name='fully_conected_1')(x)
+
     model_nc = Model(inputs=x_in, outputs=x, name='red_uno')
 
     # compilación del modelo
@@ -47,7 +70,6 @@ def model_build(img_resolucion, cfg, red_name=DEFAULT_NAME, save_model=True):
     model_cp.compile(cfg['optimizer'], cfg['lost_fn'],
                      metrics=cfg['metrica'])
     # Graficando el modelo
-    savepath = os.path.join(dicact, 'saved_models')
     os.makedirs(savepath, exist_ok=True)
     print('Generando imagen del modelo')
     plot_model(model_cp, to_file=os.path.join(savepath, red_name + '.png'))
@@ -94,7 +116,7 @@ def train_model(modelo, cfg_train, red_name=DEFAULT_NAME, save_weights=True):
     return model_history, modelo
 
 
-def resultados_graficos(model_history):
+def resultados_graficos(model_history, red_name=DEFAULT_NAME):
     plt.figure(0)
     plt.plot(model_history.history['acc'], 'r')
     plt.plot(model_history.history['val_acc'], 'g')
@@ -104,6 +126,7 @@ def resultados_graficos(model_history):
     plt.ylabel("Accuracy")
     plt.title("Training Accuracy vs Validation Accuracy")
     plt.legend(['train', 'validation'])
+    plt.savefig(os.path.join(savepath, red_name + '_TaccVacc.png'))
 
     plt.figure(1)
     plt.plot(model_history.history['loss'], 'r')
@@ -114,6 +137,7 @@ def resultados_graficos(model_history):
     plt.ylabel("Loss")
     plt.title("Training Loss vs Validation Loss")
     plt.legend(['train', 'validation'])
+    plt.savefig(os.path.join(savepath, red_name + '_TlossVloss.png'))
 
     plt.figure(2)
     plt.plot(model_history.history['mse'], 'r')
@@ -124,7 +148,8 @@ def resultados_graficos(model_history):
     plt.ylabel("MSE")
     plt.title("Training Loss vs Validation Loss")
     plt.legend(['train', 'validation'])
-    plt.show()
+    plt.savefig(os.path.join(savepath, red_name + '_mseTlossVloss.png'))
+    # plt.show()
 
 
 if __name__ == "__main__":
