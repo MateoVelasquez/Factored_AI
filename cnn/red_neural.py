@@ -16,6 +16,7 @@ from tensorflow.keras.layers import (AveragePooling2D, MaxPooling2D, #noqa
                                      GlobalAveragePooling2D) #noqa
 from tensorflow.keras.utils import plot_model
 from tensorflow.keras.models import Model
+from tensorflow.keras import optimizer
 from tensorflow.keras.callbacks import (EarlyStopping, ReduceLROnPlateau)
 
 
@@ -48,7 +49,7 @@ def model_build(img_resolucion, cfg, red_name=DEFAULT_NAME, save_model=True):
     x = MaxPooling2D(cfg['maxpool_sze'], name='max_pooling_1')(x)
 
     # convolucion 2
-    x = Conv2D(64, cfg['kernel_sze'], strides=cfg['stride'],
+    x = Conv2D(16, cfg['kernel_sze'], strides=cfg['stride'],
                name='convolucion_2')(x)
     x = BatchNormalization(axis=cfg['norm_ejes'], name='batch_normal_2')(x)
     x = Activation(cfg['l1_act'])(x)
@@ -57,7 +58,7 @@ def model_build(img_resolucion, cfg, red_name=DEFAULT_NAME, save_model=True):
     # Flatten
     x = Flatten()(x)
     # Fullyconected 0
-    x = Dense(64, activation=cfg['fc_act'], name='fully_conected_0')(x)
+    x = Dense(16, activation=cfg['fc_act'], name='fully_conected_0')(x)
     x = Dropout(0.5)(x)
 
     # Fullyconected 1
@@ -67,7 +68,7 @@ def model_build(img_resolucion, cfg, red_name=DEFAULT_NAME, save_model=True):
 
     # compilación del modelo
     model_cp = model_nc
-    model_cp.compile(cfg['optimizer'], cfg['lost_fn'],
+    model_cp.compile(optimizer.Adam(learning_rate=0.0001), cfg['lost_fn'],
                      metrics=cfg['metrica'])
     # Graficando el modelo
     os.makedirs(savepath, exist_ok=True)
@@ -99,9 +100,10 @@ def train_model(modelo, cfg_train, red_name=DEFAULT_NAME, save_weights=True):
     # # https://enmilocalfunciona.io/tratamiento-de-imagenes-usando-imagedatagenerator-en-keras/  #noqa
     early_stop = EarlyStopping(monitor='val_loss', patience=20,
                                verbose=1, min_delta=1e-4)
-    reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=4,
-                                  verbose=1, min_delta=1e-4)
-    callbacks_list = [early_stop, reduce_lr]
+    # reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=4,
+    #                               verbose=1, min_delta=1e-4)
+    # callbacks_list = [early_stop, reduce_lr]
+    callbacks_list = [early_stop]
     nb_test_samples = len(test_generador)
     pasos_fit = (nb_test_samples // cfg_train['BATCH_SIZE'])
     model_history = modelo.fit(train_generador,

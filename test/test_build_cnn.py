@@ -23,7 +23,7 @@ def train_red():
     # Parametros de configuracion de la red
     parametros = {
         'padding': (4, 4),
-        'kernel_num': 32,
+        'kernel_num': 8,
         'kernel_sze': (3, 3),
         'stride': (1, 1),
         'norm_ejes': 3,
@@ -62,9 +62,9 @@ def prediccion(red_name, img_to_predict):
 if __name__ == "__main__":
 
     # # crear y entrenar la red:
-    # train_red()
+    train_red()
 
-    # # hacer una prediccion:
-    file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\PNEUMONIA\person1952_bacteria_4883.jpeg' #noqa
-    # file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\NORMAL\NORMAL2-IM-1436-0001.jpeg' #noqa
-    prediccion('alexnet', file_path)
+    # # # hacer una prediccion:
+    # file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\PNEUMONIA\person1952_bacteria_4883.jpeg' #noqa
+    # # file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\NORMAL\NORMAL2-IM-1436-0001.jpeg' #noqa
+    # prediccion('alexnet', file_path)
