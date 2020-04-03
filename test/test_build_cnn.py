@@ -12,29 +12,29 @@ cfg_train = {
     'TRAIN_DATA_PATH': r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\train',
     'TEST_DATA_PATH': r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\test',
     'VAL_DATA_PATH': r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val',
-    'BATCH_SIZE': 32,
-    'EPOCAS': 50,
-    'IMG_SZE': (224, 224, 1),  # (heigth, width, channel)
-    'IMG_COLOR': "grayscale"
+    'BATCH_SIZE': 1,
+    'EPOCAS': 60,
+    'IMG_SZE': (200, 200, 3),  # (heigth, width, channel)
+    'IMG_COLOR': "rgb"
 }
 
 
 def train_red():
     # Parametros de configuracion de la red
     parametros = {
-        'padding': (4, 4),
+        'padding': (1, 1),
         'kernel_num': 32,
         'kernel_sze': (3, 3),
         'stride': (1, 1),
         'norm_ejes': 3,
         'l1_act': 'relu',
         'maxpool_sze': (2, 2),
-        'fc_act': 'sigmoid',
+        'fc_act': 'softmax',
         'optimizer': 'adam',
-        'lost_fn': 'binary_crossentropy',
+        'lost_fn': 'categorical_crossentropy',
         'metrica': ['acc', 'mse']
     }
-    cnn_red, _ = red.model_build(cfg_train['IMG_SZE'], parametros,
+    cnn_red, _ = red.model_paper(cfg_train['IMG_SZE'], parametros,
                                  save_model=True)
     historial, modelo = red.train_model(cnn_red, cfg_train)
     red.resultados_graficos(historial)
@@ -59,12 +59,20 @@ def prediccion(red_name, img_to_predict):
         print(f'Probabilidad {resultado[0]}. El paciente pude tener neumonia')
 
 
+def model_summary():
+    parametros = {'metrica': ['acc', 'mse']}
+    modelopaper,_ = red.model_paper(cfg_train['IMG_SZE'], parametros,
+                                  save_model=False)
+    print(modelopaper.summary())
+
 if __name__ == "__main__":
+    #resumen red
+    #model_summary()
 
     # # crear y entrenar la red:
-    # train_red()
+    train_red()
 
-    # # hacer una prediccion:
-    file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\PNEUMONIA\person1952_bacteria_4883.jpeg' #noqa
-    # file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\NORMAL\NORMAL2-IM-1436-0001.jpeg' #noqa
-    prediccion('alexnet', file_path)
+    # # # hacer una prediccion:
+    # file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\PNEUMONIA\person1952_bacteria_4883.jpeg' #noqa
+    # # file_path = r'C:\Users\MATEO\RepositoriosGIT\Factored_AI\img\val\NORMAL\NORMAL2-IM-1436-0001.jpeg' #noqa
+    # prediccion('alexnet', file_path)

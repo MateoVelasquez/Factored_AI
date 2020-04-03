@@ -35,7 +35,12 @@ def build_generador(data_dir, batch_sze=BATCH_SIZE,
     print(f'clases encontradas: {CLASS_NAMES}')
 
     # creando el generador
-    img_gen = keras.preprocessing.image.ImageDataGenerator(rescale=1./255)
+    img_gen = keras.preprocessing.image.ImageDataGenerator(rescale=1./255,
+                                                           rotation_range=40,
+                                                           width_shift_range=0.2,
+                                                           height_shift_range=0.2,
+                                                           shear_range=0.2,
+                                                           zoom_range=0.2)
     train_data_gen = img_gen.flow_from_directory(directory=str(data_dir),
                                                  batch_size=batch_sze,
                                                  shuffle=True,
@@ -54,7 +59,8 @@ def show_batch(image_batch, label_batch, class_names):
         plt.subplot(math.ceil(math.sqrt(num_img)),
                     math.ceil(math.sqrt(num_img)), n+1)
         plt.imshow(image_batch[n])
-        plt.title(class_names[label_batch[n] == 1][0].title())
+        plt.title(class_names[int(label_batch[n])])
+        # plt.title(class_names[label_batch[n] == 1][0].title())
         plt.axis('off')
     plt.draw()
     plt.show()
